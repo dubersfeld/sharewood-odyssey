@@ -1,0 +1,31 @@
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-service:8761/eureka/
+        
+        
+spring:
+  jpa:
+    database: "MYSQL"
+    hibernate:
+      naming:
+        physical-strategy: 
+          org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: "true"
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://users-mysql:3306/sharewood_users
+    username: spring
+    password: password1234
+    
+server:
+  port: 9090    
+
+
+        
+

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-service
+spec:
+  selector:
+    matchLabels:
+      run: authorization-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: authorization-service
+    spec:
+      containers:
+      - name: authorization-service
+        image: sharewood/authorization-server
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          periodSeconds: 30
+          tcpSocket:
+            port: 8080
+        env:
+        - name: SHAREWOOD_CONFIG_URI
+          value: "http://config-service:8888"
+        - name: PROFILE
+          value: dev
+        - name: CONFIGSERVER_HOST
+          value: config-service
+        - name: CONFIGSERVER_PORT
+          value: "8888"
+        - name: USERSERVER_HOST
+          value: user-service
+        - name: USERSERVER_PORT
+          value: "9090"
+        - name: DATABASE_HOST
+          value: tokens-mysql
+        - name: DATABASE_PORT
+          value: "3306"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorization-service
+  labels:
+    run: authorization-service
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+  selector:
+    run: authorization-service

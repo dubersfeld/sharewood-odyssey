@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sharewood-service
+spec:
+  selector:
+    matchLabels:
+      run: sharewood-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: sharewood-service
+    spec:
+      containers:
+      - name: sharewood-service
+        image: sharewood/sharewood
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          periodSeconds: 30
+          tcpSocket:
+            port: 8081
+        env:
+        - name: SHAREWOOD_CONFIG_URI
+          value: "http://config-service:8888"
+        - name: PROFILE
+          value: dev
+        - name: CONFIGSERVER_HOST
+          value: config-service
+        - name: CONFIGSERVER_PORT
+          value: "8888"
+        - name: TOKEN_DATABASE_HOST
+          value: tokens-mysql
+        - name: TOKEN_DATABASE_PORT
+          value: "3306"
+        - name: PHOTO_DATABASE_HOST
+          value: photos-mysql
+        - name: PHOTO_DATABASE_PORT
+          value: "3306"
+        volumeMounts:
+        - name: photo-binary
+          mountPath: /home/photos
+        ports:
+        - containerPort: 8081    
+      volumes:
+      - name: photo-binary
+        persistentVolumeClaim:
+          claimName: sharewood-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sharewood-service
+  labels:
+    run: sharewood-service
+spec:
+  ports:
+  - port: 8081
+    protocol: TCP
+  selector:
+    run: sharewood-service

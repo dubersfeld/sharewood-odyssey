@@ -1,0 +1,5 @@
+#!/bin/bash
+
+manifest=$1
+
+kubectl create -f $manifest

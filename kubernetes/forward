@@ -1,0 +1,7 @@
+#!/bin/bash
+
+service=$1
+host=$2
+container=$3
+
+kubectl port-forward svc/$service $host:$container &

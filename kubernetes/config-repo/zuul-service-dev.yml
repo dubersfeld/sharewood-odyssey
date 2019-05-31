@@ -1,0 +1,28 @@
+server:
+  port: 5555
+    
+zuul:
+  sensitive-headers: 
+  routes:  
+    sharewood-service: /sharewood/**   
+    
+    
+ribbon:
+  ConnectTimeout:  10000
+  ReadTimeout:  10000
+        
+    
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-service:8761/eureka/ 
+
+
+proxy-sharewood-url: "http://localhost:5555/sharewood"
+        
+     
+     

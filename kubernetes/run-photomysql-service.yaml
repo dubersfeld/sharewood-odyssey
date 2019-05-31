@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photos-mysql
+spec:
+  selector:
+    matchLabels:
+      run: photos-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: photos-mysql
+    spec:
+      containers:
+      - image: sharewood/photos-mysql
+        imagePullPolicy: IfNotPresent
+        name: mongo
+        readinessProbe:
+          periodSeconds: 30
+          tcpSocket:
+            port: 3306
+        env:
+        - name: MYSQL_DATABASE
+          value: sharewood_photos
+        - name: MYSQL_USER
+          value: spring
+        - name: MYSQL_PASSWORD
+          value: password1234
+        volumeMounts:
+        - name: photomysql-data
+          mountPath: /var/lib/mysql
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+      volumes:
+      - name: photomysql-data
+        persistentVolumeClaim:
+          claimName: photomysql-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: photos-mysql
+  labels:
+    run: photos-mysql
+spec:
+  ports:
+  - port: 3306
+    protocol: TCP
+  selector:
+    run: photos-mysql

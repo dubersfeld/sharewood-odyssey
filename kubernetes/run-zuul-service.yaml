@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zuul-service
+spec:
+  selector:
+    matchLabels:
+      run: zuul-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: zuul-service
+    spec:
+      containers:
+      - name: zuul-service
+        image: sharewood/zuul-server
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          periodSeconds: 30
+          tcpSocket:
+            port: 5555
+        env:
+        - name: SHAREWOOD_CONFIG_URI
+          value: "http://config-service:8888"
+        - name: PROFILE
+          value: dev
+        - name: CONFIGSERVER_HOST
+          value: config-service
+        - name: CONFIGSERVER_PORT
+          value: "8888"
+        ports:
+        - containerPort: 5555
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zuul-service
+  labels:
+    run: zuul-service
+spec:
+  ports:
+  - port: 5555
+    protocol: TCP
+  selector:
+    run: zuul-service

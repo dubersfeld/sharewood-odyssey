@@ -1,0 +1,5 @@
+#!/bin/bash
+
+kubectl delete configmap sharewood-config
+
+kubectl create configmap sharewood-config --from-file=config-repo

@@ -1,0 +1,34 @@
+server:
+  port: 8090 
+  servlet:
+    context-path: /fleetwood
+
+security: 
+  oauth2: 
+    client: 
+      client-id: Fleetwood
+      client-secret: y471l12D2y55U5558rd2
+
+# authorization server
+accessTokenUri: http://localhost:8080/authorization/oauth/token
+userAuthorizationUri: http://localhost:8080/authorization/oauth/authorize
+
+
+# resource server
+#producerBaseURL: http://localhost:5555/sharewood/api/
+sharewoodPhotoBaseURL: http://localhost:5555/sharewood/api/photos
+#sharewoodPhotoBaseURL: http://127.0.0.1:8081/api/photos
+
+
+
+
+
+
+# client
+tempDir: /home/ubersfeld/Pictures/client/tmp/
+
+# Logging pattern for the console
+logging:
+  pattern: 
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+ 

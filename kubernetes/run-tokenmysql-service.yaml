@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tokens-mysql
+spec:
+  selector:
+    matchLabels:
+      run: tokens-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: tokens-mysql
+    spec:
+      containers:
+      - image: sharewood/tokens-mysql
+        imagePullPolicy: IfNotPresent
+        name: mysql
+        readinessProbe:
+          periodSeconds: 30
+          tcpSocket:
+            port: 3306
+        env:
+        - name: MYSQL_DATABASE
+          value: sharewood_tokens
+        - name: MYSQL_USER
+          value: spring
+        - name: MYSQL_PASSWORD
+          value: password1234
+        volumeMounts:
+        - name: tokenmysql-data
+          mountPath: /var/lib/mysql
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+      volumes:
+      - name: tokenmysql-data
+        persistentVolumeClaim:
+          claimName: tokenmysql-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tokens-mysql
+  labels:
+    run: tokens-mysql
+spec:
+  ports:
+  - port: 3306
+    protocol: TCP
+  selector:
+    run: tokens-mysql

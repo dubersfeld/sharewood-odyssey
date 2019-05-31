@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  selector:
+    matchLabels:
+      run: user-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: sharewood/user-server
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          periodSeconds: 30
+          tcpSocket:
+            port: 9090
+        env:
+        - name: SHAREWOOD_CONFIG_URI
+          value: "http://config-service:8888"
+        - name: PROFILE
+          value: dev
+        - name: CONFIGSERVER_HOST
+          value: config-service
+        - name: CONFIGSERVER_PORT
+          value: "8888"
+        - name: DATABASE_HOST
+          value: users-mysql
+        - name: DATABASE_PORT
+          value: "3306"
+        ports:
+        - containerPort: 9090
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  labels:
+    run: user-service
+spec:
+  ports:
+  - port: 9090
+    protocol: TCP
+  selector:
+    run: user-service

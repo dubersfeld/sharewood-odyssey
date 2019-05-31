@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-mysql
+spec:
+  selector:
+    matchLabels:
+      run: users-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: users-mysql
+    spec:
+      containers:
+      - image: sharewood/users-mysql
+        imagePullPolicy: IfNotPresent
+        name: mysql
+        readinessProbe:
+          periodSeconds: 30
+          tcpSocket:
+            port: 3306
+        env:
+        - name: MYSQL_DATABASE
+          value: sharewood_users
+        - name: MYSQL_USER
+          value: spring
+        - name: MYSQL_PASSWORD
+          value: password1234
+        volumeMounts:
+        - name: usermysql-data
+          mountPath: /var/lib/mysql
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+      volumes:
+      - name: usermysql-data
+        persistentVolumeClaim:
+          claimName: usermysql-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-mysql
+  labels:
+    run: users-mysql
+spec:
+  ports:
+  - port: 3306
+    protocol: TCP
+  selector:
+    run: users-mysql

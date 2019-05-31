@@ -1,0 +1,7 @@
+#!/bin/bash
+
+kubectl delete pvc usermysql-pvc
+kubectl delete pv usermysql-pv
+
+kubectl create -f usermysql-pv-hostpath.yaml
+kubectl create -f usermysql-pvc.yaml

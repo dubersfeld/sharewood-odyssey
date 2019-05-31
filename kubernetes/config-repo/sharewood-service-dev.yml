@@ -1,0 +1,54 @@
+# tokenstore datasource
+token:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://tokens-mysql:3306/sharewood_tokens
+    username: spring
+    password: password1234
+    jpa:
+      hibernate:
+        naming: 
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# photos datasource
+photo:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://photos-mysql:3306/sharewood_photos
+    username: spring
+    password: password1234
+
+
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8081
+
+
+security:
+  oauth2:
+    resource: 
+      id: SHAREWOOD
+
+
+photos:
+  # container file system, not host filesystem
+  baseDirPath: "/home/photos/"   
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-service:8761/eureka/ 
+
+
+
+
